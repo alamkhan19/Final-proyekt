@@ -1,0 +1,40 @@
+const express = require('express');
+const router = express.Router();
+const Place = require('../models/Place');
+
+router.get('/', async (req, res) => {
+  try {
+    const places = await Place.find();
+    res.json(places);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+router.post('/', async (req, res) => {
+  const place = new Place({
+    name: req.body.name,
+    category: req.body.category,
+    description: req.body.description,
+    address: req.body.address,
+    rating: req.body.rating,
+    photo: req.body.photo
+  });
+  try {
+    const newPlace = await place.save();
+    res.status(201).json(newPlace);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+router.delete('/:id', async (req, res) => {
+  try {
+    await Place.findByIdAndDelete(req.params.id);
+    res.json({ message: 'Silindi ✅' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+module.exports = router;
