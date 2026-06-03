@@ -19,7 +19,6 @@ function App() {
     (
       node["amenity"="restaurant"](40.35,49.75,40.45,49.95);
       node["amenity"="cafe"](40.35,49.75,40.45,49.95);
-      node["tourism"="attraction"](40.35,49.75,40.45,49.95);
       node["leisure"="park"](40.35,49.75,40.45,49.95);
     );
     out 30;
@@ -41,7 +40,7 @@ function App() {
             el.tags.tourism ? "Tarixi yer" : "Park",
         description: el.tags["cuisine"] || "",
         address: el.tags["addr:street"] || "Bakı",
-        rating: 4,
+        rating: Math.floor(Math.random() * 3) + 3,
         photo: (() => {
           const restaurantPhotos = [
             "https://images.pexels.com/photos/67468/pexels-photo-67468.jpeg?auto=compress&w=400&h=300",
@@ -97,27 +96,38 @@ function App() {
     fetchPlaces();
   }, []);
 
-  const filtered = places.filter(p => {
-    const matchSearch = p.name.toLowerCase().includes(search.toLowerCase());
-    const matchCat = category === "Hamısı" || p.category === category;
-    const matchMood = mood === "Hamısı" || p.mood === mood;
-    return matchSearch && matchCat && matchMood;
-  });
+  const filtered = places
+    .filter(p => p.name !== "Tural Bileceri")
+    .filter(p => {
+      const matchSearch = p.name?.toLowerCase().includes(search.toLowerCase());
+      const matchCat = category === "Hamısı" || p.category === category;
+      const matchMood = mood === "Hamısı" || p.mood === mood;
+      return matchSearch && matchCat && matchMood;
+    });
 
   return (
     <div className="app">
       <header>
-        <h1>🗺️ Bakı Gəzinti Rəhbəri</h1>
-        <p>Bakının ən gözəl yerlərini kəşf et</p>
+        <h1>Şəhər Sirləri</h1>
+        <p className="subtitle">Bakının gizli qaldığı yerləri kəşf et</p>
       </header>
 
       <div className="filters">
         <input placeholder="🔍 Axtar..." value={search} onChange={e => setSearch(e.target.value)} />
         <select value={category} onChange={e => setCategory(e.target.value)}>
-          {["Hamısı", "Restoran", "Park", "Tarixi yer", "Kafe", "Gizli yer"].map(c => <option key={c}>{c}</option>)}
+          <option value="Hamısı">🏷️ Kateqoriya</option>
+          <option>Restoran</option>
+          <option>Park</option>
+          <option>Tarixi yer</option>
+          <option>Kafe</option>
+          <option>Gizli yer</option>
         </select>
         <select value={mood} onChange={e => setMood(e.target.value)}>
-          {["Hamısı", "Romantik", "Ailə", "Tək", "Dostlarla"].map(m => <option key={m}>{m}</option>)}
+          <option value="Hamısı">🎭 Əhval</option>
+          <option>Romantik</option>
+          <option>Ailə</option>
+          <option>Tək</option>
+          <option>Dostlarla</option>
         </select>
         <button onClick={() => setShowForm(!showForm)}>+ Yer əlavə et</button>
       </div>
