@@ -1,6 +1,6 @@
 import axios from "axios";
 
-function PlaceCard({ place, onDelete }) {
+function PlaceCard({ place, onDelete, isAdmin }) {
   const handleDelete = async () => {
     await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/places/${place._id}`);
     onDelete();
@@ -10,13 +10,13 @@ function PlaceCard({ place, onDelete }) {
     <div className="card">
       {place.photo && <img src={place.photo} alt={place.name} />}
       <div className="card-body">
-        <span className="category">{place.category}</span>
+        <span className="card-category">{place.category}</span>
         <h3>{place.name}</h3>
         <p>{place.description}</p>
         <p>📍 {place.address}</p>
         <div className="card-footer">
           <span className="rating">{"⭐".repeat(place.rating || 1)}</span>
-          <button className="delete-btn" onClick={handleDelete}>🗑️</button>
+          {isAdmin && <button className="delete-btn" onClick={handleDelete}>🗑️</button>}
         </div>
       </div>
     </div>
