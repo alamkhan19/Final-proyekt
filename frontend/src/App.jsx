@@ -12,7 +12,7 @@ function App() {
   const [showForm, setShowForm] = useState(false);
 
   const fetchPlaces = async () => {
-    const res = await axios.get("http://localhost:5000/api/places");
+    const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/places`);
 
     const query = `
     [out:json];
