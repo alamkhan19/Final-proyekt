@@ -2,7 +2,7 @@ import axios from "axios";
 
 function PlaceCard({ place, onDelete }) {
   const handleDelete = async () => {
-    await axios.delete(`http://localhost:5000/api/places/${place._id}`);
+    await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/places/${place._id}`);
     onDelete();
   };
 

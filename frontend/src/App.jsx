@@ -35,12 +35,14 @@ function App() {
     });
 
   return (
-    <div className="app">
-      <header>
-        <h1>Şəhər Sirləri</h1>
-        <p className="subtitle">Bakının gizli qaldığı yerləri kəşf et</p>
-      </header>
+  <div className="app">
+    <header>
+      <h1>Şəhər Sirləri</h1>
+      <p className="subtitle">Bakının gizli qaldığı yerləri kəşf et</p>
+      <span className="scroll-hint">↓ Aşağı bax</span>
+    </header>
 
+    <div className="main-content">
       <div className="filters">
         <input placeholder="🔍 Axtar..." value={search} onChange={e => setSearch(e.target.value)} />
         <select value={category} onChange={e => setCategory(e.target.value)}>
@@ -67,7 +69,8 @@ function App() {
         {filtered.map(place => <PlaceCard key={place._id} place={place} onDelete={fetchPlaces} />)}
       </div>
     </div>
-  );
+  </div>
+);
 }
 
 export default App;
