@@ -1,10 +1,41 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import PlaceCard from "./components/PlaceCard";
 import AddPlaceForm from "./components/AddPlaceForm";
 import "./App.css";
 
-const CITIES = ["Hamısı","Bakı","Abşeron","Gəncə","Şəki","Quba","Lənkəran"];
+function Dropdown({ value, onChange, options, placeholder }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef();
+
+  useEffect(() => {
+    const handler = (e) => { if (!ref.current?.contains(e.target)) setOpen(false); };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  return (
+    <div className="custom-dropdown" ref={ref}>
+      <button className="dropdown-btn" onClick={() => setOpen(!open)}>
+        {value === "Hamısı" ? placeholder : value}
+        <span className="dropdown-arrow">{open ? "▲" : "▼"}</span>
+      </button>
+      {open && (
+        <div className="dropdown-menu">
+          {options.map(opt => (
+            <div
+              key={opt}
+              className={`dropdown-item ${value === opt ? "active" : ""}`}
+              onClick={() => { onChange(opt); setOpen(false); }}
+            >
+              {opt}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 function App() {
   const [places, setPlaces] = useState([]);
@@ -19,17 +50,14 @@ function App() {
     try {
       const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/places`);
       setPlaces(res.data);
-    } catch (err) {
-      console.error(err);
-    }
+    } catch (err) { console.error(err); }
   };
 
   useEffect(() => { fetchPlaces(); }, []);
 
   const handleAdminClick = () => {
-    if (isAdmin) {
-      setIsAdmin(false);
-    } else {
+    if (isAdmin) { setIsAdmin(false); }
+    else {
       const pass = prompt("Admin şifrəsi:");
       if (pass === "baki2024") setIsAdmin(true);
       else alert("Şifrə yanlışdır!");
@@ -40,7 +68,7 @@ function App() {
     .filter(p => p.name !== "Tural Bileceri")
     .filter(p => {
       const matchSearch = p.name?.toLowerCase().includes(search.toLowerCase());
-      const matchCat  = category === "Hamısı" || p.category === category;
+      const matchCat = category === "Hamısı" || p.category === category;
       const matchMood = mood === "Hamısı" || p.mood === mood;
       const matchCity = city === "Hamısı" || p.city === city;
       return matchSearch && matchCat && matchMood && matchCity;
@@ -65,41 +93,24 @@ function App() {
       <div className="main-content">
         <div className="filters">
           <input placeholder="🔍 Axtar..." value={search} onChange={e => setSearch(e.target.value)} />
-          <select value={category} onChange={e => setCategory(e.target.value)}>
-            <option value="Hamısı">🏷️ Kateqoriya</option>
-            <option>Restoran</option>
-            <option>Park</option>
-            <option>Tarixi yer</option>
-            <option>Kafe</option>
-            <option>Gizli yer</option>
-          </select>
-          <select value={city} onChange={e => setCity(e.target.value)}>
-            <option value="Hamısı">🏙️ Şəhər</option>
-            <option>Abşeron</option>
-            <option>Bakı</option>
-            <option>Gəncə</option>
-            <option>Göygöl</option>
-            <option>İsmayıllı</option>
-            <option>Lerik</option>
-            <option>Lənkəran</option>
-            <option>Masallı</option>
-            <option>Oğuz</option>
-            <option>Qaz</option>
-            <option>Qəbələ</option>
-            <option>Quba</option>
-            <option>Qusar</option>
-            <option>Şamaxı</option>
-            <option>Şəki</option>
-            <option>Tovuz</option>
-            <option>Zaqatala</option>
-          </select>
-          <select value={mood} onChange={e => setMood(e.target.value)}>
-            <option value="Hamısı">🎭 Əhval</option>
-            <option>Romantik</option>
-            <option>Ailə</option>
-            <option>Tək</option>
-            <option>Dostlarla</option>
-          </select>
+          <Dropdown
+            value={category}
+            onChange={setCategory}
+            placeholder="🏷️ Kateqoriya"
+            options={["Hamısı","Restoran","Park","Tarixi yer","Kafe","Gizli yer"]}
+          />
+          <Dropdown
+            value={city}
+            onChange={setCity}
+            placeholder="🏙️ Şəhər"
+            options={["Hamısı","Abşeron","Bakı","Gəncə","Göygöl","İsmayıllı","Lerik","Lənkəran","Masallı","Oğuz","Qəbələ","Quba","Qusar","Şamaxı","Şəki","Tovuz","Zaqatala"]}
+          />
+          <Dropdown
+            value={mood}
+            onChange={setMood}
+            placeholder="🎭 Əhval"
+            options={["Hamısı","Romantik","Ailə","Tək","Dostlarla"]}
+          />
           <button onClick={() => setShowForm(!showForm)}>+ Yer əlavə et</button>
         </div>
 
