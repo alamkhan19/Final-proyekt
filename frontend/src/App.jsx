@@ -137,6 +137,25 @@ function App() {
           onClose={() => setSelectedPlace(null)}
         />
       )}
+
+      <footer style={{
+        background: "#1a1a2e",
+        color: "#e8d5a3",
+        textAlign: "center",
+        padding: "40px 20px",
+        marginTop: "60px"
+      }}>
+        <h3 style={{ fontSize: "1.5rem", marginBottom: "8px", color: "#f5d78e" }}>
+          Discover Azerbaijan
+        </h3>
+        <p style={{ opacity: 0.7, marginBottom: "16px" }}>
+          Azərbaycanın gözəl yerlərini kəşf et
+        </p>
+        <p style={{ opacity: 0.5, fontSize: "0.85rem" }}>
+          © 2026 Discover Azerbaijan. Bütün hüquqlar qorunur.
+        </p>
+      </footer>
+
     </div>
   );
 }
