@@ -1,13 +1,13 @@
 import axios from "axios";
 
-function PlaceCard({ place, onDelete, isAdmin }) {
+function PlaceCard({ place, onDelete, isAdmin, onClick }) {
   const handleDelete = async () => {
     await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/places/${place._id}`);
     onDelete();
   };
 
   return (
-    <div className="card">
+    <div className="card" onClick={onClick}>
       {place.photo && <img src={place.photo} alt={place.name} />}
       <div className="card-body">
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>

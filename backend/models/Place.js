@@ -9,7 +9,10 @@ const placeSchema = new mongoose.Schema({
   photo:       { type: String },
   mood:        { type: String },
   city:        { type: String, default: "Bakı" },
-  price:       { type: String }
+  price:       { type: String },
+  phone:       { type: String },
+  hours:       { type: String },
+  mapLink:     { type: String }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Place', placeSchema);

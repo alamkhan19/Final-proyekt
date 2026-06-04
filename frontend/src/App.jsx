@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import PlaceCard from "./components/PlaceCard";
 import AddPlaceForm from "./components/AddPlaceForm";
+import PlaceDetail from "./components/PlaceDetail";
 import "./App.css";
 
 function Dropdown({ value, onChange, options, placeholder }) {
@@ -45,6 +46,7 @@ function App() {
   const [city, setCity] = useState("Hamısı");
   const [showForm, setShowForm] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [selectedPlace, setSelectedPlace] = useState(null);
 
   const fetchPlaces = async () => {
     try {
@@ -114,14 +116,27 @@ function App() {
           <button onClick={() => setShowForm(!showForm)}>+ Yer əlavə et</button>
         </div>
 
-        {showForm && <AddPlaceForm onAdd={() => { fetchPlaces(); setShowForm(false); }} />}
+        {showForm && <AddPlaceForm onAdd={() => { fetchPlaces(); setShowForm(false); }} onClose={() => setShowForm(false)} />}
 
         <div className="grid">
           {filtered.map(place => (
-            <PlaceCard key={place._id} place={place} onDelete={fetchPlaces} isAdmin={isAdmin} />
+            <PlaceCard
+              key={place._id}
+              place={place}
+              onDelete={fetchPlaces}
+              isAdmin={isAdmin}
+              onClick={() => setSelectedPlace(place)}
+            />
           ))}
         </div>
       </div>
+
+      {selectedPlace && (
+        <PlaceDetail
+          place={selectedPlace}
+          onClose={() => setSelectedPlace(null)}
+        />
+      )}
     </div>
   );
 }
