@@ -1,4 +1,11 @@
+import { useEffect } from "react";
+
 function PlaceDetail({ place, onClose }) {
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = ""; };
+  }, []);
+
   if (!place) return null;
 
   return (
