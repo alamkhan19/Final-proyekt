@@ -93,6 +93,15 @@ header .subtitle {
   background: #fdfaf3;
   color: #2c2c2c;
   transition: border-color 0.2s;
+  max-height: 48px;
+}
+.filters select option {
+  max-height: 200px;
+}
+
+select {
+  -webkit-appearance: auto;
+  appearance: auto;
 }
 
 .filters input:focus,

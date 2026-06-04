@@ -1,10 +1,14 @@
 import { useState } from "react";
 import axios from "axios";
 
+const CITIES = ["Bakı","Abşeron","Gəncə","Şəki","Quba","Lənkəran"];
+const PRICES = ["₼ (ucuz)","₼₼ (orta)","₼₼₼ (bahalı)"];
+
 function AddPlaceForm({ onAdd }) {
   const [form, setForm] = useState({
     name: "", category: "Restoran", description: "",
-    address: "", rating: 5, photo: "", mood: "Ailə"
+    address: "", rating: 5, photo: "", mood: "Ailə",
+    city: "Bakı", price: "₼ (ucuz)"
   });
 
   const handleChange = e => {
@@ -13,7 +17,9 @@ function AddPlaceForm({ onAdd }) {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    await axios.post("http://localhost:5000/api/places", form);
+    const data = { ...form };
+    if (data.category !== "Restoran") delete data.price;
+    await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/places`, data);
     onAdd();
   };
 
@@ -25,6 +31,9 @@ function AddPlaceForm({ onAdd }) {
         <select name="category" value={form.category} onChange={handleChange}>
           {["Restoran","Park","Tarixi yer","Kafe","Gizli yer"].map(c => <option key={c}>{c}</option>)}
         </select>
+        <select name="city" value={form.city} onChange={handleChange}>
+          {CITIES.map(c => <option key={c}>{c}</option>)}
+        </select>
         <select name="mood" value={form.mood} onChange={handleChange}>
           {["Ailə","Romantik","Tək","Dostlarla"].map(m => <option key={m}>{m}</option>)}
         </select>
@@ -34,6 +43,14 @@ function AddPlaceForm({ onAdd }) {
         <select name="rating" value={form.rating} onChange={handleChange}>
           {[1,2,3,4,5].map(r => <option key={r} value={r}>{r} ⭐</option>)}
         </select>
+
+        {/* Yalnız Restoran üçün qiymət */}
+        {form.category === "Restoran" && (
+          <select name="price" value={form.price} onChange={handleChange}>
+            {PRICES.map(p => <option key={p}>{p}</option>)}
+          </select>
+        )}
+
         <button onClick={handleSubmit}>Əlavə et ✅</button>
       </div>
     </div>

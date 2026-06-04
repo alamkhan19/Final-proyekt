@@ -4,11 +4,14 @@ import PlaceCard from "./components/PlaceCard";
 import AddPlaceForm from "./components/AddPlaceForm";
 import "./App.css";
 
+const CITIES = ["Hamısı","Bakı","Abşeron","Gəncə","Şəki","Quba","Lənkəran"];
+
 function App() {
   const [places, setPlaces] = useState([]);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("Hamısı");
   const [mood, setMood] = useState("Hamısı");
+  const [city, setCity] = useState("Hamısı");
   const [showForm, setShowForm] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
 
@@ -21,9 +24,7 @@ function App() {
     }
   };
 
-  useEffect(() => {
-    fetchPlaces();
-  }, []);
+  useEffect(() => { fetchPlaces(); }, []);
 
   const handleAdminClick = () => {
     if (isAdmin) {
@@ -39,9 +40,10 @@ function App() {
     .filter(p => p.name !== "Tural Bileceri")
     .filter(p => {
       const matchSearch = p.name?.toLowerCase().includes(search.toLowerCase());
-      const matchCat = category === "Hamısı" || p.category === category;
+      const matchCat  = category === "Hamısı" || p.category === category;
       const matchMood = mood === "Hamısı" || p.mood === mood;
-      return matchSearch && matchCat && matchMood;
+      const matchCity = city === "Hamısı" || p.city === city;
+      return matchSearch && matchCat && matchMood && matchCity;
     });
 
   return (
@@ -51,17 +53,10 @@ function App() {
         <p className="subtitle">Bakının gizli qaldığı yerləri kəşf et</p>
         <span className="scroll-hint">↓ Aşağı bax</span>
         <button onClick={handleAdminClick} style={{
-          position: "absolute",
-          top: "20px",
-          right: "20px",
-          background: "rgba(255,255,255,0.15)",
-          border: "1px solid rgba(255,255,255,0.3)",
-          color: "white",
-          padding: "8px 16px",
-          borderRadius: "8px",
-          cursor: "pointer",
-          fontSize: "0.85rem",
-          backdropFilter: "blur(4px)"
+          position:"absolute", top:"20px", right:"20px",
+          background:"rgba(255,255,255,0.15)", border:"1px solid rgba(255,255,255,0.3)",
+          color:"white", padding:"8px 16px", borderRadius:"8px",
+          cursor:"pointer", fontSize:"0.85rem", backdropFilter:"blur(4px)"
         }}>
           {isAdmin ? "🔓 Admin" : "🔒"}
         </button>
@@ -78,6 +73,26 @@ function App() {
             <option>Kafe</option>
             <option>Gizli yer</option>
           </select>
+          <select value={city} onChange={e => setCity(e.target.value)}>
+            <option value="Hamısı">🏙️ Şəhər</option>
+            <option>Abşeron</option>
+            <option>Bakı</option>
+            <option>Gəncə</option>
+            <option>Göygöl</option>
+            <option>İsmayıllı</option>
+            <option>Lerik</option>
+            <option>Lənkəran</option>
+            <option>Masallı</option>
+            <option>Oğuz</option>
+            <option>Qaz</option>
+            <option>Qəbələ</option>
+            <option>Quba</option>
+            <option>Qusar</option>
+            <option>Şamaxı</option>
+            <option>Şəki</option>
+            <option>Tovuz</option>
+            <option>Zaqatala</option>
+          </select>
           <select value={mood} onChange={e => setMood(e.target.value)}>
             <option value="Hamısı">🎭 Əhval</option>
             <option>Romantik</option>
@@ -92,12 +107,7 @@ function App() {
 
         <div className="grid">
           {filtered.map(place => (
-            <PlaceCard 
-              key={place._id} 
-              place={place} 
-              onDelete={fetchPlaces} 
-              isAdmin={isAdmin}
-            />
+            <PlaceCard key={place._id} place={place} onDelete={fetchPlaces} isAdmin={isAdmin} />
           ))}
         </div>
       </div>
