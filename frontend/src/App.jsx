@@ -47,6 +47,7 @@ function App() {
   const [showForm, setShowForm] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState(null);
+  const [darkMode, setDarkMode] = useState(false);
 
   const fetchPlaces = async () => {
     try {
@@ -56,6 +57,10 @@ function App() {
   };
 
   useEffect(() => { fetchPlaces(); }, []);
+
+  useEffect(() => {
+    document.body.className = darkMode ? "dark" : "";
+  }, [darkMode]);
 
   const handleAdminClick = () => {
     if (isAdmin) { setIsAdmin(false); }
@@ -82,6 +87,14 @@ function App() {
         <h1>Discover Azerbaijan</h1>
         <p className="subtitle">Explore the hidden gems of Azerbaijan</p>
         <span className="scroll-hint">↓ Aşağı bax</span>
+        <button onClick={() => setDarkMode(!darkMode)} style={{
+          position:"absolute", top:"20px", right:"110px",
+          background:"rgba(255,255,255,0.15)", border:"1px solid rgba(255,255,255,0.3)",
+          color:"white", padding:"8px 16px", borderRadius:"8px",
+          cursor:"pointer", fontSize:"0.85rem", backdropFilter:"blur(4px)"
+        }}>
+          {darkMode ? "☀️" : "🌙"}
+        </button>
         <button onClick={handleAdminClick} style={{
           position:"absolute", top:"20px", right:"20px",
           background:"rgba(255,255,255,0.15)", border:"1px solid rgba(255,255,255,0.3)",
@@ -95,28 +108,20 @@ function App() {
       <div className="main-content">
         <div className="filters">
           <input placeholder="🔍 Axtar..." value={search} onChange={e => setSearch(e.target.value)} />
-          <Dropdown
-            value={category}
-            onChange={setCategory}
-            placeholder="🏷️ Kateqoriya"
-            options={["Hamısı","Restoran","Park","Tarixi yer","Kafe","Gizli yer"]}
-          />
-          <Dropdown
-            value={city}
-            onChange={setCity}
-            placeholder="🏙️ Şəhər"
-            options={["Hamısı","Abşeron","Bakı","Gəncə","Göygöl","İsmayıllı","Lerik","Lənkəran","Masallı","Oğuz","Qəbələ","Quba","Qusar","Şamaxı","Şəki","Tovuz","Zaqatala"]}
-          />
-          <Dropdown
-            value={mood}
-            onChange={setMood}
-            placeholder="🎭 Əhval"
-            options={["Hamısı","Romantik","Ailə","Tək","Dostlarla"]}
-          />
+          <Dropdown value={category} onChange={setCategory} placeholder="🏷️ Kateqoriya"
+            options={["Hamısı","Restoran","Park","Tarixi yer","Kafe","Gizli yer"]} />
+          <Dropdown value={city} onChange={setCity} placeholder="🏙️ Şəhər"
+            options={["Hamısı","Abşeron","Bakı","Gəncə","Göygöl","İsmayıllı","Lerik","Lənkəran","Masallı","Oğuz","Qəbələ","Quba","Qusar","Şamaxı","Şəki","Tovuz","Zaqatala"]} />
+          <Dropdown value={mood} onChange={setMood} placeholder="🎭 Əhval"
+            options={["Hamısı","Romantik","Ailə","Tək","Dostlarla"]} />
           <button onClick={() => setShowForm(!showForm)}>+ Yer əlavə et</button>
         </div>
 
         {showForm && <AddPlaceForm onAdd={() => { fetchPlaces(); setShowForm(false); }} onClose={() => setShowForm(false)} />}
+
+        <p style={{ textAlign:"center", color:"#888", marginBottom:"16px", fontSize:"0.95rem" }}>
+          🔍 {filtered.length} yer tapıldı
+        </p>
 
         <div className="grid">
           {filtered.map(place => (
@@ -139,23 +144,13 @@ function App() {
       )}
 
       <footer style={{
-        background: "#1a1a2e",
-        color: "#e8d5a3",
-        textAlign: "center",
-        padding: "40px 20px",
-        marginTop: "60px"
+        background: "#1a1a2e", color: "#e8d5a3",
+        textAlign: "center", padding: "40px 20px", marginTop: "60px"
       }}>
-        <h3 style={{ fontSize: "1.5rem", marginBottom: "8px", color: "#f5d78e" }}>
-          Discover Azerbaijan
-        </h3>
-        <p style={{ opacity: 0.7, marginBottom: "16px" }}>
-          Azərbaycanın gözəl yerlərini kəşf et
-        </p>
-        <p style={{ opacity: 0.5, fontSize: "0.85rem" }}>
-          © 2026 Discover Azerbaijan. Bütün hüquqlar qorunur.
-        </p>
+        <h3 style={{ fontSize: "1.5rem", marginBottom: "8px", color: "#f5d78e" }}>Discover Azerbaijan</h3>
+        <p style={{ opacity: 0.7, marginBottom: "16px" }}>Azərbaycanın gözəl yerlərini kəşf et</p>
+        <p style={{ opacity: 0.5, fontSize: "0.85rem" }}>© 2026 Discover Azerbaijan. Bütün hüquqlar qorunur.</p>
       </footer>
-
     </div>
   );
 }

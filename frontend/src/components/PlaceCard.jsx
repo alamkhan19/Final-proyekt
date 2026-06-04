@@ -1,6 +1,27 @@
+import { useState, useEffect } from "react";
 import axios from "axios";
 
 function PlaceCard({ place, onDelete, isAdmin, onClick }) {
+  const [liked, setLiked] = useState(false);
+
+  useEffect(() => {
+    const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+    setLiked(favorites.includes(place._id));
+  }, [place._id]);
+
+  const toggleLike = (e) => {
+    e.stopPropagation();
+    const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+    let updated;
+    if (liked) {
+      updated = favorites.filter(id => id !== place._id);
+    } else {
+      updated = [...favorites, place._id];
+    }
+    localStorage.setItem("favorites", JSON.stringify(updated));
+    setLiked(!liked);
+  };
+
   const handleDelete = async () => {
     await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/places/${place._id}`);
     onDelete();
@@ -20,7 +41,21 @@ function PlaceCard({ place, onDelete, isAdmin, onClick }) {
         {place.price && <p style={{ color:"#4caf50", fontWeight:"bold" }}>{place.price}</p>}
         <div className="card-footer">
           <span className="rating">{"⭐".repeat(place.rating || 1)}</span>
-          {isAdmin && <button className="delete-btn" onClick={handleDelete}>🗑</button>}
+          <div style={{ display:"flex", gap:"8px", alignItems:"center" }}>
+            <button
+              onClick={toggleLike}
+              style={{
+                background: "none",
+                border: "none",
+                fontSize: "1.3rem",
+                cursor: "pointer",
+                transition: "transform 0.2s"
+              }}
+            >
+              {liked ? "❤️" : "🤍"}
+            </button>
+            {isAdmin && <button className="delete-btn" onClick={e => { e.stopPropagation(); handleDelete(); }}>🗑</button>}
+          </div>
         </div>
       </div>
     </div>

@@ -445,3 +445,38 @@ select {
   header { height: 60vh; }
   .card img { height: 160px; }
 }
+
+body.dark {
+  background: #0f0f1a;
+  color: #e8d5a3;
+}
+
+body.dark .card {
+  background: #1a1a2e;
+  color: #e8d5a3;
+  border: 1px solid #333;
+}
+
+body.dark .filters {
+  background: #1a1a2e;
+  border: 1px solid #333;
+}
+
+body.dark input {
+  background: #2a2a3e;
+  color: #e8d5a3;
+  border: 1px solid #444;
+}
+
+body.dark .dropdown-menu {
+  background: #1a1a2e;
+  border-color: #444;
+}
+
+body.dark .dropdown-item {
+  color: #e8d5a3;
+}
+
+body.dark .dropdown-item:hover {
+  background: #2a2a3e;
+}

@@ -28,6 +28,16 @@ router.post('/', async (req, res) => {
   }
 });
 
+router.get('/:id', async (req, res) => {
+  try {
+    const place = await Place.findById(req.params.id);
+    if (!place) return res.status(404).json({ message: 'Tapılmadı' });
+    res.json(place);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 router.delete('/:id', async (req, res) => {
   try {
     await Place.findByIdAndDelete(req.params.id);
