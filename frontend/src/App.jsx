@@ -79,8 +79,8 @@ function App() {
   return (
     <div className="app">
       <header>
-        <h1>Şəhər Sirləri</h1>
-        <p className="subtitle">Bakının gizli qaldığı yerləri kəşf et</p>
+        <h1>Discover Azerbaijan</h1>
+        <p className="subtitle">Explore the hidden gems of Azerbaijan</p>
         <span className="scroll-hint">↓ Aşağı bax</span>
         <button onClick={handleAdminClick} style={{
           position:"absolute", top:"20px", right:"20px",
