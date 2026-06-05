@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 
-const CITIES = ["Bakı","Abşeron","Gəncə","Göygöl","İsmayıllı","Lerik","Lənkəran","Masallı","Oğuz","Qəbələ","Quba","Qusar","Şamaxı","Şəki","Tovuz","Zaqatala"];
+import { CITIES } from "../constants";
 const PRICES = ["₼ (ucuz)","₼₼ (orta)","₼₼₼ (bahalı)"];
 
 function EditPlaceForm({ place, onClose, onSave }) {
@@ -62,12 +62,21 @@ function EditPlaceForm({ place, onClose, onSave }) {
         </select>
 
         <select name="city" value={form.city} onChange={handleChange}>
-          <option value="">-- Şəhər seç --</option>
-          {CITIES.map(c => <option key={c}>{c}</option>)}
+          <option value="">Şəhər seç</option>
+          {CITIES.slice(1).map((city) => (
+            <option key={city} value={city}>
+              {city}
+            </option>
+          ))}
         </select>
 
         <select name="mood" value={form.mood} onChange={handleChange}>
-          {["Ailə","Romantik","Tək","Dostlarla"].map(m => <option key={m}>{m}</option>)}
+          <option value="">Əhval seç</option>
+          {["Ailə", "Romantik", "Tək", "Dostlarla"].map((m) => (
+            <option key={m} value={m}>
+              {m}
+            </option>
+          ))}
         </select>
 
         <input name="address" placeholder="Ünvan" value={form.address} onChange={handleChange} />

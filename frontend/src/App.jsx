@@ -4,6 +4,7 @@ import PlaceCard from "./components/PlaceCard";
 import AddPlaceForm from "./components/AddPlaceForm";
 import EditPlaceForm from "./components/EditPlaceForm";
 import PlaceDetail from "./components/PlaceDetail";
+import { CITIES } from "./constants";
 import "./App.css";
 
 const TEXTS = {
@@ -87,7 +88,6 @@ function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [lang, setLang] = useState("az");
   
-  // YENİ STATE:
   const [showFavorites, setShowFavorites] = useState(false);
 
   const langBtnRef = useRef();
@@ -148,13 +148,17 @@ function App() {
   const filtered = places
     .filter(p => p.name !== "Tural Bileceri")
     .filter(p => {
-      const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
-      const matchSearch = p.name?.toLowerCase().includes(search.toLowerCase());
+      const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+      const matchSearch = p.name.toLowerCase().includes(search.toLowerCase());
       const matchCat = category === "Hamısı" || category === "All" || p.category === category;
-      const matchMood = mood === "Hamısı" || mood === "All" || p.mood === mood;
+  
+      console.log("Seçilən mood:", mood, " | Yerin mood-u:", p.mood);
+  
+      console.log("Məlumat obyekti:", p);
+      const matchMood = mood === "Hamısı" || mood === "All" || (p.mood && p.mood.trim() === mood.trim());
       const matchCity = city === "Hamısı" || city === "All" || p.city === city;
-      // SEVİMLİLƏR FİLTRİ:
-      const matchFav = !showFavorites || favorites.includes(p._id);
+  
+      const matchFav = !showFavorites || favorites.includes(p.id);
       return matchSearch && matchCat && matchMood && matchCity && matchFav;
     });
 
@@ -194,8 +198,7 @@ function App() {
         <div className="filters">
           <input placeholder={t.search} value={search} onChange={e => setSearch(e.target.value)} />
           <Dropdown value={category} onChange={setCategory} placeholder={t.category} options={t.categories} />
-          <Dropdown value={city} onChange={setCity} placeholder={t.city}
-            options={["Hamısı","Abşeron","Bakı","Gəncə","Göygöl","İsmayıllı","Lerik","Lənkəran","Masallı","Oğuz","Qəbələ","Quba","Qusar","Şamaxı","Şəki","Tovuz","Zaqatala"]} />
+          <Dropdown value={city} onChange={setCity} placeholder={t.city} options={CITIES} />
           <Dropdown value={mood} onChange={setMood} placeholder={t.mood} options={t.moods} />
           
           <button 
