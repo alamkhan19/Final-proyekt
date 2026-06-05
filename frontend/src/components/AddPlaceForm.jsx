@@ -17,12 +17,23 @@ function AddPlaceForm({ onAdd, onClose }) {
 };
 
   const handleSubmit = async e => {
-    e.preventDefault();
+  e.preventDefault();
+  try {
     const data = { ...form };
     if (data.category !== "Restoran" && data.category !== "Kafe") delete data.price;
-    await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/places`, data);
+    
+    const url = `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/places`;
+    console.log("POST URL:", url);
+    console.log("Data:", data);
+    
+    const res = await axios.post(url, data);
+    console.log("Response:", res);
     onAdd();
-  };
+  } catch (err) {
+    console.error("Xəta:", err);
+    alert("Xəta: " + (err.response?.data?.message || err.message));
+  }
+};
 
   return (
     <div className="form-overlay">

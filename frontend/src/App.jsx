@@ -86,11 +86,13 @@ function App() {
   const [editPlace, setEditPlace] = useState(null);
   const [darkMode, setDarkMode] = useState(false);
   const [lang, setLang] = useState("az");
+  
+  // YENİ STATE:
+  const [showFavorites, setShowFavorites] = useState(false);
 
   const langBtnRef = useRef();
   const darkBtnRef = useRef();
   const adminBtnRef = useRef();
-  const addBtnRef = useRef();
 
   const t = TEXTS[lang];
 
@@ -143,22 +145,17 @@ function App() {
     return () => btn.removeEventListener("click", handler);
   }, [isAdmin, t]);
 
-  useEffect(() => {
-    const btn = addBtnRef.current;
-    if (!btn) return;
-    const handler = () => setShowForm(prev => !prev);
-    btn.addEventListener("click", handler);
-    return () => btn.removeEventListener("click", handler);
-  }, []);
-
   const filtered = places
     .filter(p => p.name !== "Tural Bileceri")
     .filter(p => {
+      const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
       const matchSearch = p.name?.toLowerCase().includes(search.toLowerCase());
       const matchCat = category === "Hamısı" || category === "All" || p.category === category;
       const matchMood = mood === "Hamısı" || mood === "All" || p.mood === mood;
       const matchCity = city === "Hamısı" || city === "All" || p.city === city;
-      return matchSearch && matchCat && matchMood && matchCity;
+      // SEVİMLİLƏR FİLTRİ:
+      const matchFav = !showFavorites || favorites.includes(p._id);
+      return matchSearch && matchCat && matchMood && matchCity && matchFav;
     });
 
   return (
@@ -200,10 +197,26 @@ function App() {
           <Dropdown value={city} onChange={setCity} placeholder={t.city}
             options={["Hamısı","Abşeron","Bakı","Gəncə","Göygöl","İsmayıllı","Lerik","Lənkəran","Masallı","Oğuz","Qəbələ","Quba","Qusar","Şamaxı","Şəki","Tovuz","Zaqatala"]} />
           <Dropdown value={mood} onChange={setMood} placeholder={t.mood} options={t.moods} />
-          {isAdmin && <button ref={addBtnRef}>{t.addPlace}</button>}
+          
+          <button 
+            onClick={() => setShowFavorites(!showFavorites)}
+          >
+            {showFavorites ? "❤️ Sevimlilər" : "🤍 Sevimlilər"}
+          </button>
+
+          {isAdmin && (
+            <button onClick={() => setShowForm(prev => !prev)}>
+              {t.addPlace}
+            </button>
+          )}
         </div>
 
-        {showForm && <AddPlaceForm onAdd={() => { fetchPlaces(); setShowForm(false); }} onClose={() => setShowForm(false)} />}
+        {showForm && (
+          <AddPlaceForm
+            onAdd={() => { fetchPlaces(); setShowForm(false); }}
+            onClose={() => setShowForm(false)}
+          />
+        )}
 
         {editPlace && (
           <EditPlaceForm

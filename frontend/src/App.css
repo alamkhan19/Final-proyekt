@@ -480,3 +480,24 @@ body.dark .dropdown-item {
 body.dark .dropdown-item:hover {
   background: #2a2a3e;
 }
+
+.fav-toggle-btn {
+  height: 42px; 
+  padding: 0 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 1px solid #c2a36b; 
+  background: rgba(194, 163, 107, 0.2); 
+  color: #5d4a2d;
+  font-weight: 600;
+  margin-left: 10px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fav-toggle-btn:hover {
+  background: #c2a36b;
+  color: white;
+}

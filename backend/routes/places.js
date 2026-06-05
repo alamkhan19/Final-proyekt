@@ -34,9 +34,16 @@ router.get('/:id', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
   try {
-    const updated = await Place.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    console.log("PUT ID:", req.params.id);
+    const updated = await Place.findByIdAndUpdate(
+      req.params.id, 
+      req.body, 
+      { new: true, runValidators: false }
+    );
+    if (!updated) return res.status(404).json({ message: 'Tapılmadı' });
     res.json(updated);
   } catch (err) {
+    console.error("PUT xəta:", err);
     res.status(500).json({ message: err.message });
   }
 });

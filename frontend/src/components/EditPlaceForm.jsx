@@ -29,8 +29,18 @@ function EditPlaceForm({ place, onClose, onSave }) {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/places/${place._id}`, form);
-    onSave();
+    const id = place._id;
+    console.log("Saxla basıldı, ID:", id);
+    try {
+      const url = `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/places/${id}`;
+      console.log("PUT URL:", url);
+      const res = await axios.put(url, form);
+      console.log("Cavab:", res.data);
+      onSave();
+    } catch (err) {
+      console.error("Xəta:", err);
+      alert("Xəta: " + (err.response?.data?.message || err.message));
+    }
   };
 
   return (
@@ -80,7 +90,7 @@ function EditPlaceForm({ place, onClose, onSave }) {
           </select>
         )}
 
-        <button type="submit" onClick={handleSubmit}>Saxla ✅</button>
+        <button onClick={handleSubmit}>Saxla ✅</button>
       </div>
     </div>
   );
