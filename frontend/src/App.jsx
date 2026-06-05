@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import PlaceCard from "./components/PlaceCard";
 import AddPlaceForm from "./components/AddPlaceForm";
+import EditPlaceForm from "./components/EditPlaceForm";
 import PlaceDetail from "./components/PlaceDetail";
 import "./App.css";
 
@@ -82,6 +83,7 @@ function App() {
   const [showForm, setShowForm] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState(null);
+  const [editPlace, setEditPlace] = useState(null);
   const [darkMode, setDarkMode] = useState(false);
   const [lang, setLang] = useState("az");
 
@@ -166,7 +168,7 @@ function App() {
         <p className="subtitle">{t.subtitle}</p>
         <span className="scroll-hint">{t.scrollHint}</span>
         <button ref={langBtnRef} style={{
-          position:"absolute", top:"20px", right:"200px",
+          position:"absolute", top:"20px", right:"230px",
           background:"rgba(255,255,255,0.15)", border:"1px solid rgba(255,255,255,0.3)",
           color:"white", padding:"8px 16px", borderRadius:"8px",
           cursor:"pointer", fontSize:"0.85rem", backdropFilter:"blur(4px)"
@@ -174,7 +176,7 @@ function App() {
           {lang === "az" ? "🇬🇧 EN" : "🇦🇿 AZ"}
         </button>
         <button ref={darkBtnRef} style={{
-          position:"absolute", top:"20px", right:"110px",
+          position:"absolute", top:"20px", right:"120px",
           background:"rgba(255,255,255,0.15)", border:"1px solid rgba(255,255,255,0.3)",
           color:"white", padding:"8px 16px", borderRadius:"8px",
           cursor:"pointer", fontSize:"0.85rem", backdropFilter:"blur(4px)"
@@ -198,10 +200,18 @@ function App() {
           <Dropdown value={city} onChange={setCity} placeholder={t.city}
             options={["Hamısı","Abşeron","Bakı","Gəncə","Göygöl","İsmayıllı","Lerik","Lənkəran","Masallı","Oğuz","Qəbələ","Quba","Qusar","Şamaxı","Şəki","Tovuz","Zaqatala"]} />
           <Dropdown value={mood} onChange={setMood} placeholder={t.mood} options={t.moods} />
-          <button ref={addBtnRef}>{t.addPlace}</button>
+          {isAdmin && <button ref={addBtnRef}>{t.addPlace}</button>}
         </div>
 
         {showForm && <AddPlaceForm onAdd={() => { fetchPlaces(); setShowForm(false); }} onClose={() => setShowForm(false)} />}
+
+        {editPlace && (
+          <EditPlaceForm
+            place={editPlace}
+            onClose={() => setEditPlace(null)}
+            onSave={() => { fetchPlaces(); setEditPlace(null); }}
+          />
+        )}
 
         <p style={{ textAlign:"center", color:"#888", marginBottom:"16px", fontSize:"0.95rem" }}>
           🔍 {filtered.length} {t.found}
@@ -216,6 +226,7 @@ function App() {
               isAdmin={isAdmin}
               lang={lang}
               onClick={() => setSelectedPlace(place)}
+              onEdit={(p) => setEditPlace(p)}
             />
           ))}
         </div>
