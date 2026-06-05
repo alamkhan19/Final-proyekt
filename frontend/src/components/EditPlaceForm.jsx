@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 
-import { CITIES } from "../constants";
+import { CITIES, MOOD_FORM_OPTIONS } from "../constants";
 const PRICES = ["₼ (ucuz)","₼₼ (orta)","₼₼₼ (bahalı)"];
 
 function EditPlaceForm({ place, onClose, onSave }) {
@@ -31,15 +31,12 @@ function EditPlaceForm({ place, onClose, onSave }) {
     e.preventDefault();
     const id = place._id;
     const url = `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/places/${id}`;
-    console.log("Saxla basıldı, ID:", id);
     try {
-      console.log("PUT URL:", url);
       const data = { ...form };
       if (data.category !== "Restoran" && data.category !== "Kafe") {
         data.price = "";
       }
-      const res = await axios.put(url, data);
-      console.log("Cavab:", res.data);
+      await axios.put(url, data);
       onSave();
     } catch (err) {
       console.error("Xəta:", err);
@@ -77,7 +74,7 @@ function EditPlaceForm({ place, onClose, onSave }) {
 
         <select name="mood" value={form.mood} onChange={handleChange}>
           <option value="">Əhval seç</option>
-          {["Ailə", "Romantik", "Tək", "Dostlarla"].map((m) => (
+          {MOOD_FORM_OPTIONS.map((m) => (
             <option key={m} value={m}>
               {m}
             </option>

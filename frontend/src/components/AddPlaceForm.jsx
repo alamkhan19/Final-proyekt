@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import { MOOD_FORM_OPTIONS } from "../constants";
 
 const CITIES = ["Bakı","Abşeron","Gəncə","Göygöl","İsmayıllı","Lerik","Lənkəran","Masallı","Oğuz","Qəbələ","Quba","Qusar","Şamaxı","Şəki","Tovuz","Zaqatala"];
 const PRICES = ["₼ (ucuz)","₼₼ (orta)","₼₼₼ (bahalı)"];
@@ -59,7 +60,7 @@ function AddPlaceForm({ onAdd, onClose }) {
         </select>
 
         <select name="mood" value={form.mood} onChange={handleChange}>
-          {["Ailə","Romantik","Tək","Dostlarla"].map(m => <option key={m}>{m}</option>)}
+          {MOOD_FORM_OPTIONS.map(m => <option key={m}>{m}</option>)}
         </select>
 
         <input name="address" placeholder="Ünvan" value={form.address} onChange={handleChange} />

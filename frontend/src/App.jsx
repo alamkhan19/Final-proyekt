@@ -4,7 +4,7 @@ import PlaceCard from "./components/PlaceCard";
 import AddPlaceForm from "./components/AddPlaceForm";
 import EditPlaceForm from "./components/EditPlaceForm";
 import PlaceDetail from "./components/PlaceDetail";
-import { CITIES } from "./constants";
+import { CITIES, MOOD_FILTER_TO_DB } from "./constants";
 import "./App.css";
 
 const TEXTS = {
@@ -110,6 +110,12 @@ function App() {
   useEffect(() => { fetchPlaces(); }, []);
 
   useEffect(() => {
+    if (!selectedPlace) return;
+    const updated = places.find(p => p._id === selectedPlace._id);
+    if (updated) setSelectedPlace(updated);
+  }, [places, selectedPlace?._id]);
+
+  useEffect(() => {
     document.body.className = darkMode ? "dark" : "";
   }, [darkMode]);
 
@@ -152,9 +158,11 @@ function App() {
   const filtered = places
     .filter(p => p.name !== "Tural Bileceri")
     .filter(p => {
-      const matchSearch = p.name.toLowerCase().includes(search.toLowerCase());
+      const matchSearch = p.name.toLowerCase().includes(search.toLowerCase())
+        || (p.nameEn && p.nameEn.toLowerCase().includes(search.toLowerCase()));
       const matchCat = category === "Hamısı" || category === "All" || p.category === category;
-      const matchMood = mood === "Hamısı" || mood === "All" || (p.mood && p.mood.trim() === mood.trim());
+      const dbMood = MOOD_FILTER_TO_DB[mood];
+      const matchMood = dbMood == null || (p.mood && p.mood.trim().toLowerCase() === dbMood.toLowerCase());
       const matchCity = city === "Hamısı" || city === "All" || p.city === city;
       const matchFav = !showFavorites || favorites.includes(p._id);
       return matchSearch && matchCat && matchMood && matchCity && matchFav;
@@ -166,30 +174,17 @@ function App() {
         <h1>Discover Azerbaijan</h1>
         <p className="subtitle">{t.subtitle}</p>
         <span className="scroll-hint">{t.scrollHint}</span>
-        <button ref={langBtnRef} style={{
-          position:"absolute", top:"20px", right:"230px",
-          background:"rgba(255,255,255,0.15)", border:"1px solid rgba(255,255,255,0.3)",
-          color:"white", padding:"8px 16px", borderRadius:"8px",
-          cursor:"pointer", fontSize:"0.85rem", backdropFilter:"blur(4px)"
-        }}>
-          {lang === "az" ? "🇬🇧 EN" : "🇦🇿 AZ"}
-        </button>
-        <button ref={darkBtnRef} style={{
-          position:"absolute", top:"20px", right:"120px",
-          background:"rgba(255,255,255,0.15)", border:"1px solid rgba(255,255,255,0.3)",
-          color:"white", padding:"8px 16px", borderRadius:"8px",
-          cursor:"pointer", fontSize:"0.85rem", backdropFilter:"blur(4px)"
-        }}>
-          {darkMode ? "☀️" : "🌙"}
-        </button>
-        <button ref={adminBtnRef} style={{
-          position:"absolute", top:"20px", right:"20px",
-          background:"rgba(255,255,255,0.15)", border:"1px solid rgba(255,255,255,0.3)",
-          color:"white", padding:"8px 16px", borderRadius:"8px",
-          cursor:"pointer", fontSize:"0.85rem", backdropFilter:"blur(4px)"
-        }}>
-          {isAdmin ? "🔓 Admin" : "🔒"}
-        </button>
+        <div className="header-actions">
+          <button ref={langBtnRef} className="header-btn">
+            {lang === "az" ? "🇬🇧 EN" : "🇦🇿 AZ"}
+          </button>
+          <button ref={darkBtnRef} className="header-btn">
+            {darkMode ? "☀️" : "🌙"}
+          </button>
+          <button ref={adminBtnRef} className="header-btn">
+            {isAdmin ? "🔓 Admin" : "🔒"}
+          </button>
+        </div>
       </header>
 
       <div className="main-content">

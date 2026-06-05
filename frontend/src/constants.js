@@ -1,3 +1,18 @@
+export const MOOD_FILTER_TO_DB = {
+  Hamısı: null,
+  All: null,
+  Romantik: "Romantik",
+  Romantic: "Romantik",
+  "Ailə": "Ailə",
+  Family: "Ailə",
+  Tək: "Tək",
+  Solo: "Tək",
+  Dostlarla: "Dostlarla",
+  "With friends": "Dostlarla",
+};
+
+export const MOOD_FORM_OPTIONS = ["Ailə", "Romantik", "Tək", "Dostlarla"];
+
 export const CITIES = [
   "Hamısı", "Abşeron", "Ağcabədi", "Ağdam", "Ağdaş", "Ağstafa", "Ağsu", 
   "Astara", "Bakı", "Balakən", "Beyləqan", "Bərdə", "Biləsuvar", "Cəlilabad", 

@@ -62,28 +62,27 @@ function PlaceDetail({ place, onClose, lang }) {
             </div>
           </div>
 
-            
-              {place.mapLink && (
-                <button
-                  onClick={() => window.open(place.mapLink, "_blank")}
-                  style={{
-                    display: "block",
-                    width: "100%",
-                    marginTop: "16px",
-                    padding: "12px",
-                    background: "linear-gradient(135deg, #7a9e5f, #b5813a)",
-                    color: "white",
-                    borderRadius: "10px",
-                    textAlign: "center",
-                    border: "none",
-                    cursor: "pointer",
-                    fontWeight: "600",
-                    fontSize: "1rem"
-                  }}
-                >
-                  🗺️ {mapsText}
-                </button>
-              )}
+          {place.mapLink && (
+            <button
+              onClick={() => window.open(place.mapLink, "_blank")}
+              style={{
+                display: "block",
+                width: "100%",
+                marginTop: "16px",
+                padding: "12px",
+                background: "linear-gradient(135deg, #7a9e5f, #b5813a)",
+                color: "white",
+                borderRadius: "10px",
+                textAlign: "center",
+                border: "none",
+                cursor: "pointer",
+                fontWeight: "600",
+                fontSize: "1rem"
+              }}
+            >
+              🗺️ {mapsText}
+            </button>
+          )}
         </div>
       </div>
     </div>
