@@ -521,7 +521,6 @@ select {
   }
 }
 
-/* ── Telefon: 375px – 600px ── */
 @media (max-width: 600px) {
   header {
     height: 55vh;
@@ -631,7 +630,6 @@ select {
   }
 }
 
-/* ── Çox kiçik ekranlar (< 375px) ── */
 @media (max-width: 374px) {
   header h1 {
     font-size: 1.6rem;
@@ -643,7 +641,6 @@ select {
   }
 }
 
-/* ── Geniş ekran: 2000px+ ── */
 @media (min-width: 2001px) {
   .main-content {
     max-width: 1600px;
