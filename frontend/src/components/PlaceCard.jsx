@@ -1,25 +1,16 @@
-import { useState, useEffect } from "react";
 import axios from "axios";
 
-function PlaceCard({ place, onDelete, isAdmin, onClick, lang, onEdit }) {
-  const [liked, setLiked] = useState(false);
+const FOOD_CATEGORIES = ["Restoran", "Kafe", "Restaurant", "Cafe"];
 
-  useEffect(() => {
-    const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
-    setLiked(favorites.includes(place._id));
-  }, [place._id]);
-
+function PlaceCard({ place, onDelete, isAdmin, onClick, lang, onEdit, isFavorite, onFavoriteChange }) {
   const toggleLike = (e) => {
     e.stopPropagation();
     const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
-    let updated;
-    if (liked) {
-      updated = favorites.filter(id => id !== place._id);
-    } else {
-      updated = [...favorites, place._id];
-    }
+    const updated = isFavorite
+      ? favorites.filter(id => id !== place._id)
+      : [...favorites, place._id];
     localStorage.setItem("favorites", JSON.stringify(updated));
-    setLiked(!liked);
+    onFavoriteChange?.(updated);
   };
 
   const handleDelete = async () => {
@@ -36,11 +27,14 @@ function PlaceCard({ place, onDelete, isAdmin, onClick, lang, onEdit }) {
       <div className="card-body">
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
           <span className="card-category">{place.category}</span>
+          {place.city && <span className="card-city" style={{ fontSize: "0.85rem", opacity: 0.8 }}>🏙️ {place.city}</span>}
         </div>
         <h3>{displayName}</h3>
         <p>{displayDesc}</p>
         <p>📍 {place.address}</p>
-        {place.price && <p style={{ color:"#4caf50", fontWeight:"bold" }}>{place.price}</p>}
+        {FOOD_CATEGORIES.includes(place.category) && place.price && (
+          <p style={{ color:"#4caf50", fontWeight:"bold" }}>{place.price}</p>
+        )}
         <div className="card-footer">
           <span className="rating">{"⭐".repeat(place.rating || 1)}</span>
           <div style={{ display:"flex", gap:"8px", alignItems:"center" }}>
@@ -49,7 +43,7 @@ function PlaceCard({ place, onDelete, isAdmin, onClick, lang, onEdit }) {
               fontSize: "1.3rem", cursor: "pointer",
               transition: "transform 0.2s"
             }}>
-              {liked ? "❤️" : "🤍"}
+              {isFavorite ? "❤️" : "🤍"}
             </button>
             {isAdmin && (
               <button

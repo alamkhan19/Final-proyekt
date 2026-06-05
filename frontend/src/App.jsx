@@ -89,6 +89,9 @@ function App() {
   const [lang, setLang] = useState("az");
   
   const [showFavorites, setShowFavorites] = useState(false);
+  const [favorites, setFavorites] = useState(() =>
+    JSON.parse(localStorage.getItem("favorites") || "[]")
+  );
 
   const langBtnRef = useRef();
   const darkBtnRef = useRef();
@@ -99,6 +102,7 @@ function App() {
   const fetchPlaces = async () => {
     try {
       const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/places`);
+      console.log("PLACES FROM DB:", res.data);
       setPlaces(res.data);
     } catch (err) { console.error(err); }
   };
@@ -148,17 +152,11 @@ function App() {
   const filtered = places
     .filter(p => p.name !== "Tural Bileceri")
     .filter(p => {
-      const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
       const matchSearch = p.name.toLowerCase().includes(search.toLowerCase());
       const matchCat = category === "Hamısı" || category === "All" || p.category === category;
-  
-      console.log("Seçilən mood:", mood, " | Yerin mood-u:", p.mood);
-  
-      console.log("Məlumat obyekti:", p);
       const matchMood = mood === "Hamısı" || mood === "All" || (p.mood && p.mood.trim() === mood.trim());
       const matchCity = city === "Hamısı" || city === "All" || p.city === city;
-  
-      const matchFav = !showFavorites || favorites.includes(p.id);
+      const matchFav = !showFavorites || favorites.includes(p._id);
       return matchSearch && matchCat && matchMood && matchCity && matchFav;
     });
 
@@ -241,6 +239,8 @@ function App() {
               onDelete={fetchPlaces}
               isAdmin={isAdmin}
               lang={lang}
+              isFavorite={favorites.includes(place._id)}
+              onFavoriteChange={setFavorites}
               onClick={() => setSelectedPlace(place)}
               onEdit={(p) => setEditPlace(p)}
             />

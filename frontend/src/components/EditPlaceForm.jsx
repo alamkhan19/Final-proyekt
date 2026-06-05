@@ -30,16 +30,21 @@ function EditPlaceForm({ place, onClose, onSave }) {
   const handleSubmit = async e => {
     e.preventDefault();
     const id = place._id;
+    const url = `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/places/${id}`;
     console.log("Saxla basıldı, ID:", id);
     try {
-      const url = `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/places/${id}`;
       console.log("PUT URL:", url);
-      const res = await axios.put(url, form);
+      const data = { ...form };
+      if (data.category !== "Restoran" && data.category !== "Kafe") {
+        data.price = "";
+      }
+      const res = await axios.put(url, data);
       console.log("Cavab:", res.data);
       onSave();
     } catch (err) {
       console.error("Xəta:", err);
-      alert("Xəta: " + (err.response?.data?.message || err.message));
+      const msg = err.response?.data?.message || err.message;
+      alert(`Xəta: ${msg}\nURL: ${url}\nID: ${id}`);
     }
   };
 

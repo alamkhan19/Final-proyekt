@@ -14,6 +14,7 @@ function PlaceDetail({ place, onClose, lang }) {
   const displayDesc = lang === "en" && place.descriptionEn ? place.descriptionEn : place.description;
   const noInfo = lang === "en" ? "No description available." : "Ətraflı məlumat yoxdur.";
   const mapsText = lang === "en" ? "Open in Google Maps" : "Google Maps-də aç";
+  const showPrice = ["Restoran", "Kafe", "Restaurant", "Cafe"].includes(place.category);
 
   return (
     <div className="detail-overlay" onClick={onClose}>
@@ -28,7 +29,7 @@ function PlaceDetail({ place, onClose, lang }) {
           <div className="detail-tags">
             <span className="card-category">{place.category}</span>
             {place.city && <span className="detail-city">🏙️ {place.city}</span>}
-            {place.price && <span className="detail-price">{place.price}</span>}
+            {showPrice && place.price && <span className="detail-price">{place.price}</span>}
             {place.mood && <span className="detail-city">🎭 {place.mood}</span>}
           </div>
 
