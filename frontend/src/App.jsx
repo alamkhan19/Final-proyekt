@@ -5,6 +5,41 @@ import AddPlaceForm from "./components/AddPlaceForm";
 import PlaceDetail from "./components/PlaceDetail";
 import "./App.css";
 
+const TEXTS = {
+  az: {
+    subtitle: "Azərbaycanın gizli incilərini kəşf et",
+    scrollHint: "↓ Aşağı bax",
+    search: "🔍 Axtar...",
+    category: "🏷️ Kateqoriya",
+    city: "🏙️ Şəhər",
+    mood: "🎭 Əhval",
+    addPlace: "+ Yer əlavə et",
+    found: "yer tapıldı",
+    footerSub: "Azərbaycanın gözəl yerlərini kəşf et",
+    copyright: "© 2026 Discover Azerbaijan. Bütün hüquqlar qorunur.",
+    adminPass: "Admin şifrəsi:",
+    wrongPass: "Şifrə yanlışdır!",
+    categories: ["Hamısı","Restoran","Park","Tarixi yer","Kafe","Gizli yer"],
+    moods: ["Hamısı","Romantik","Ailə","Tək","Dostlarla"],
+  },
+  en: {
+    subtitle: "Explore the hidden gems of Azerbaijan",
+    scrollHint: "↓ Scroll down",
+    search: "🔍 Search...",
+    category: "🏷️ Category",
+    city: "🏙️ City",
+    mood: "🎭 Mood",
+    addPlace: "+ Add place",
+    found: "places found",
+    footerSub: "Discover the beautiful places of Azerbaijan",
+    copyright: "© 2026 Discover Azerbaijan. All rights reserved.",
+    adminPass: "Admin password:",
+    wrongPass: "Wrong password!",
+    categories: ["All","Restaurant","Park","Historic site","Cafe","Hidden gem"],
+    moods: ["All","Romantic","Family","Solo","With friends"],
+  }
+};
+
 function Dropdown({ value, onChange, options, placeholder }) {
   const [open, setOpen] = useState(false);
   const ref = useRef();
@@ -18,7 +53,7 @@ function Dropdown({ value, onChange, options, placeholder }) {
   return (
     <div className="custom-dropdown" ref={ref}>
       <button className="dropdown-btn" onClick={() => setOpen(!open)}>
-        {value === "Hamısı" ? placeholder : value}
+        {value === options[0] ? placeholder : value}
         <span className="dropdown-arrow">{open ? "▲" : "▼"}</span>
       </button>
       {open && (
@@ -48,6 +83,14 @@ function App() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [darkMode, setDarkMode] = useState(false);
+  const [lang, setLang] = useState("az");
+
+  const langBtnRef = useRef();
+  const darkBtnRef = useRef();
+  const adminBtnRef = useRef();
+  const addBtnRef = useRef();
+
+  const t = TEXTS[lang];
 
   const fetchPlaces = async () => {
     try {
@@ -62,22 +105,57 @@ function App() {
     document.body.className = darkMode ? "dark" : "";
   }, [darkMode]);
 
-  const handleAdminClick = () => {
-    if (isAdmin) { setIsAdmin(false); }
-    else {
-      const pass = prompt("Admin şifrəsi:");
-      if (pass === "baki2024") setIsAdmin(true);
-      else alert("Şifrə yanlışdır!");
-    }
-  };
+  useEffect(() => {
+    const btn = langBtnRef.current;
+    if (!btn) return;
+    const handler = () => {
+      const newLang = lang === "az" ? "en" : "az";
+      setLang(newLang);
+      setCategory(TEXTS[newLang].categories[0]);
+      setMood(TEXTS[newLang].moods[0]);
+    };
+    btn.addEventListener("click", handler);
+    return () => btn.removeEventListener("click", handler);
+  }, [lang]);
+
+  useEffect(() => {
+    const btn = darkBtnRef.current;
+    if (!btn) return;
+    const handler = () => setDarkMode(prev => !prev);
+    btn.addEventListener("click", handler);
+    return () => btn.removeEventListener("click", handler);
+  }, []);
+
+  useEffect(() => {
+    const btn = adminBtnRef.current;
+    if (!btn) return;
+    const handler = () => {
+      if (isAdmin) { setIsAdmin(false); }
+      else {
+        const pass = prompt(t.adminPass);
+        if (pass === "baki2024") setIsAdmin(true);
+        else alert(t.wrongPass);
+      }
+    };
+    btn.addEventListener("click", handler);
+    return () => btn.removeEventListener("click", handler);
+  }, [isAdmin, t]);
+
+  useEffect(() => {
+    const btn = addBtnRef.current;
+    if (!btn) return;
+    const handler = () => setShowForm(prev => !prev);
+    btn.addEventListener("click", handler);
+    return () => btn.removeEventListener("click", handler);
+  }, []);
 
   const filtered = places
     .filter(p => p.name !== "Tural Bileceri")
     .filter(p => {
       const matchSearch = p.name?.toLowerCase().includes(search.toLowerCase());
-      const matchCat = category === "Hamısı" || p.category === category;
-      const matchMood = mood === "Hamısı" || p.mood === mood;
-      const matchCity = city === "Hamısı" || p.city === city;
+      const matchCat = category === "Hamısı" || category === "All" || p.category === category;
+      const matchMood = mood === "Hamısı" || mood === "All" || p.mood === mood;
+      const matchCity = city === "Hamısı" || city === "All" || p.city === city;
       return matchSearch && matchCat && matchMood && matchCity;
     });
 
@@ -85,9 +163,17 @@ function App() {
     <div className="app">
       <header>
         <h1>Discover Azerbaijan</h1>
-        <p className="subtitle">Explore the hidden gems of Azerbaijan</p>
-        <span className="scroll-hint">↓ Aşağı bax</span>
-        <button onClick={() => setDarkMode(!darkMode)} style={{
+        <p className="subtitle">{t.subtitle}</p>
+        <span className="scroll-hint">{t.scrollHint}</span>
+        <button ref={langBtnRef} style={{
+          position:"absolute", top:"20px", right:"200px",
+          background:"rgba(255,255,255,0.15)", border:"1px solid rgba(255,255,255,0.3)",
+          color:"white", padding:"8px 16px", borderRadius:"8px",
+          cursor:"pointer", fontSize:"0.85rem", backdropFilter:"blur(4px)"
+        }}>
+          {lang === "az" ? "🇬🇧 EN" : "🇦🇿 AZ"}
+        </button>
+        <button ref={darkBtnRef} style={{
           position:"absolute", top:"20px", right:"110px",
           background:"rgba(255,255,255,0.15)", border:"1px solid rgba(255,255,255,0.3)",
           color:"white", padding:"8px 16px", borderRadius:"8px",
@@ -95,7 +181,7 @@ function App() {
         }}>
           {darkMode ? "☀️" : "🌙"}
         </button>
-        <button onClick={handleAdminClick} style={{
+        <button ref={adminBtnRef} style={{
           position:"absolute", top:"20px", right:"20px",
           background:"rgba(255,255,255,0.15)", border:"1px solid rgba(255,255,255,0.3)",
           color:"white", padding:"8px 16px", borderRadius:"8px",
@@ -107,20 +193,18 @@ function App() {
 
       <div className="main-content">
         <div className="filters">
-          <input placeholder="🔍 Axtar..." value={search} onChange={e => setSearch(e.target.value)} />
-          <Dropdown value={category} onChange={setCategory} placeholder="🏷️ Kateqoriya"
-            options={["Hamısı","Restoran","Park","Tarixi yer","Kafe","Gizli yer"]} />
-          <Dropdown value={city} onChange={setCity} placeholder="🏙️ Şəhər"
+          <input placeholder={t.search} value={search} onChange={e => setSearch(e.target.value)} />
+          <Dropdown value={category} onChange={setCategory} placeholder={t.category} options={t.categories} />
+          <Dropdown value={city} onChange={setCity} placeholder={t.city}
             options={["Hamısı","Abşeron","Bakı","Gəncə","Göygöl","İsmayıllı","Lerik","Lənkəran","Masallı","Oğuz","Qəbələ","Quba","Qusar","Şamaxı","Şəki","Tovuz","Zaqatala"]} />
-          <Dropdown value={mood} onChange={setMood} placeholder="🎭 Əhval"
-            options={["Hamısı","Romantik","Ailə","Tək","Dostlarla"]} />
-          <button onClick={() => setShowForm(!showForm)}>+ Yer əlavə et</button>
+          <Dropdown value={mood} onChange={setMood} placeholder={t.mood} options={t.moods} />
+          <button ref={addBtnRef}>{t.addPlace}</button>
         </div>
 
         {showForm && <AddPlaceForm onAdd={() => { fetchPlaces(); setShowForm(false); }} onClose={() => setShowForm(false)} />}
 
         <p style={{ textAlign:"center", color:"#888", marginBottom:"16px", fontSize:"0.95rem" }}>
-          🔍 {filtered.length} yer tapıldı
+          🔍 {filtered.length} {t.found}
         </p>
 
         <div className="grid">
@@ -130,6 +214,7 @@ function App() {
               place={place}
               onDelete={fetchPlaces}
               isAdmin={isAdmin}
+              lang={lang}
               onClick={() => setSelectedPlace(place)}
             />
           ))}
@@ -140,6 +225,7 @@ function App() {
         <PlaceDetail
           place={selectedPlace}
           onClose={() => setSelectedPlace(null)}
+          lang={lang}
         />
       )}
 
@@ -148,8 +234,8 @@ function App() {
         textAlign: "center", padding: "40px 20px", marginTop: "60px"
       }}>
         <h3 style={{ fontSize: "1.5rem", marginBottom: "8px", color: "#f5d78e" }}>Discover Azerbaijan</h3>
-        <p style={{ opacity: 0.7, marginBottom: "16px" }}>Azərbaycanın gözəl yerlərini kəşf et</p>
-        <p style={{ opacity: 0.5, fontSize: "0.85rem" }}>© 2026 Discover Azerbaijan. Bütün hüquqlar qorunur.</p>
+        <p style={{ opacity: 0.7, marginBottom: "16px" }}>{t.footerSub}</p>
+        <p style={{ opacity: 0.5, fontSize: "0.85rem" }}>{t.copyright}</p>
       </footer>
     </div>
   );

@@ -1,18 +1,25 @@
 import { useEffect } from "react";
 
-function PlaceDetail({ place, onClose }) {
+function PlaceDetail({ place, onClose, lang }) {
   useEffect(() => {
     document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, []);
 
   if (!place) return null;
+
+  const displayName = lang === "en" && place.nameEn ? place.nameEn : place.name;
+  const displayDesc = lang === "en" && place.descriptionEn ? place.descriptionEn : place.description;
+  const noInfo = lang === "en" ? "No description available." : "Ətraflı məlumat yoxdur.";
+  const mapsText = lang === "en" ? "Open in Google Maps" : "Google Maps-də aç";
 
   return (
     <div className="detail-overlay" onClick={onClose}>
       <div className="detail-card" onClick={e => e.stopPropagation()}>
         <button className="detail-close" onClick={onClose}>✕</button>
-        
+
         {place.photo && (
           <img src={place.photo} alt={place.name} className="detail-img" />
         )}
@@ -25,11 +32,9 @@ function PlaceDetail({ place, onClose }) {
             {place.mood && <span className="detail-city">🎭 {place.mood}</span>}
           </div>
 
-          <h2 className="detail-title">{place.name}</h2>
+          <h2 className="detail-title">{displayName}</h2>
 
-          <p className="detail-description">
-            {place.description || "Ətraflı məlumat yoxdur."}
-          </p>
+          <p className="detail-description">{displayDesc || noInfo}</p>
 
           <div className="detail-info">
             {place.address && (
@@ -41,7 +46,7 @@ function PlaceDetail({ place, onClose }) {
             {place.phone && (
               <div className="detail-info-row">
                 <span>📞</span>
-                <a href={`tel:${place.phone}`} style={{color:"#b5813a"}}>{place.phone}</a>
+                <span>{place.phone}</span>
               </div>
             )}
             {place.hours && (
@@ -52,30 +57,32 @@ function PlaceDetail({ place, onClose }) {
             )}
             <div className="detail-info-row">
               <span>⭐</span>
-              <span>{"⭐".repeat(place.rating || 1)} ({place.rating || 1}/5)</span>
+              <span>{place.rating || 1} / 5</span>
             </div>
           </div>
 
-          {place.mapLink && (
-            <a 
-              href={place.mapLink} 
-              target="_blank" 
-              rel="noreferrer"
-              style={{
-                display: "block",
-                marginTop: "16px",
-                padding: "12px",
-                background: "linear-gradient(135deg, #7a9e5f, #b5813a)",
-                color: "white",
-                borderRadius: "10px",
-                textAlign: "center",
-                textDecoration: "none",
-                fontWeight: "600"
-              }}
-            >
-              🗺️ Google Maps-də aç
-            </a>
-          )}
+            
+              {place.mapLink && (
+                <button
+                  onClick={() => window.open(place.mapLink, "_blank")}
+                  style={{
+                    display: "block",
+                    width: "100%",
+                    marginTop: "16px",
+                    padding: "12px",
+                    background: "linear-gradient(135deg, #7a9e5f, #b5813a)",
+                    color: "white",
+                    borderRadius: "10px",
+                    textAlign: "center",
+                    border: "none",
+                    cursor: "pointer",
+                    fontWeight: "600",
+                    fontSize: "1rem"
+                  }}
+                >
+                  🗺️ {mapsText}
+                </button>
+              )}
         </div>
       </div>
     </div>

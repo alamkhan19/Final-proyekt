@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-function PlaceCard({ place, onDelete, isAdmin, onClick }) {
+function PlaceCard({ place, onDelete, isAdmin, onClick, lang }) {
   const [liked, setLiked] = useState(false);
 
   useEffect(() => {
@@ -27,6 +27,9 @@ function PlaceCard({ place, onDelete, isAdmin, onClick }) {
     onDelete();
   };
 
+  const displayName = lang === "en" && place.nameEn ? place.nameEn : place.name;
+  const displayDesc = lang === "en" && place.descriptionEn ? place.descriptionEn : place.description;
+
   return (
     <div className="card" onClick={onClick}>
       {place.photo && <img src={place.photo} alt={place.name} />}
@@ -35,8 +38,8 @@ function PlaceCard({ place, onDelete, isAdmin, onClick }) {
           <span className="card-category">{place.category}</span>
           {place.city && <span style={{ fontSize:"0.75rem", color:"#888" }}>📍 {place.city}</span>}
         </div>
-        <h3>{place.name}</h3>
-        <p>{place.description}</p>
+        <h3>{displayName}</h3>
+        <p>{displayDesc}</p>
         <p>📍 {place.address}</p>
         {place.price && <p style={{ color:"#4caf50", fontWeight:"bold" }}>{place.price}</p>}
         <div className="card-footer">
@@ -45,10 +48,8 @@ function PlaceCard({ place, onDelete, isAdmin, onClick }) {
             <button
               onClick={toggleLike}
               style={{
-                background: "none",
-                border: "none",
-                fontSize: "1.3rem",
-                cursor: "pointer",
+                background: "none", border: "none",
+                fontSize: "1.3rem", cursor: "pointer",
                 transition: "transform 0.2s"
               }}
             >

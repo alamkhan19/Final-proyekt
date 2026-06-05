@@ -12,7 +12,9 @@ const placeSchema = new mongoose.Schema({
   price:       { type: String },
   phone:       { type: String },
   hours:       { type: String },
-  mapLink:     { type: String }
+  mapLink:     { type: String },
+  nameEn:        { type: String },
+  descriptionEn: { type: String },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Place', placeSchema);
