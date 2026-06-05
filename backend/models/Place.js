@@ -8,7 +8,7 @@ const placeSchema = new mongoose.Schema({
   rating:      { type: Number, min: 1, max: 5 },
   photo:       { type: String },
   mood:        { type: String },
-  city:        { type: String, default: "Bakı" },
+  city:        { type: String },
   price:       { type: String },
   phone:       { type: String },
   hours:       { type: String },

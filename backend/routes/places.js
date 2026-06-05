@@ -12,15 +12,9 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-  const place = new Place({
-    name: req.body.name,
-    category: req.body.category,
-    description: req.body.description,
-    address: req.body.address,
-    rating: req.body.rating,
-    photo: req.body.photo
-  });
+  console.log("Gələn data:", req.body);
   try {
+    const place = new Place(req.body);
     const newPlace = await place.save();
     res.status(201).json(newPlace);
   } catch (err) {

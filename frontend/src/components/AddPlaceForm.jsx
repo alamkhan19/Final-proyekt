@@ -8,12 +8,13 @@ function AddPlaceForm({ onAdd, onClose }) {
   const [form, setForm] = useState({
     name: "", nameEn: "", category: "Restoran", description: "", descriptionEn: "",
     address: "", rating: 5, photo: "", mood: "Ailə",
-    city: "Bakı", price: "₼ (ucuz)", phone: "", hours: "", mapLink: ""
+    city: "", price: "₼ (ucuz)", phone: "", hours: "", mapLink: ""
   });
 
   const handleChange = e => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  const { name, value } = e.target;
+  setForm(prev => ({ ...prev, [name]: value }));
+};
 
   const handleSubmit = async e => {
     e.preventDefault();
@@ -42,6 +43,7 @@ function AddPlaceForm({ onAdd, onClose }) {
         </select>
 
         <select name="city" value={form.city} onChange={handleChange}>
+          <option value="">-- Şəhər seç --</option>
           {CITIES.map(c => <option key={c}>{c}</option>)}
         </select>
 
